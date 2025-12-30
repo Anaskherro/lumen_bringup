@@ -14,7 +14,7 @@ This package provides launch files and configuration to bring up the robot stack
    - Mapping : 
    - `ros2 launch lumen_bringup bringup.launch.py`
    - Navigation :
-   - `ros2 launch lumen_bringu navigation.launch.py`
+   - `ros2 launch lumen_bringup navigation.launch.py`
 
 Adjust any launch arguments or parameters as needed.
 
