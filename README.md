@@ -11,7 +11,10 @@ This package provides launch files and configuration to bring up the robot stack
    - colcon build
    - source install/setup.bash
 3. Launch the bringup stack:
+   - Mapping : 
    - `ros2 launch lumen_bringup bringup.launch.py`
+   - Navigation :
+   - `ros2 launch lumen_bringu navigation.launch.py`
 
 Adjust any launch arguments or parameters as needed.
 
