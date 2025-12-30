@@ -17,15 +17,16 @@ def generate_launch_description():
     # ========================================================================
     rplidar_node = Node(
         package='rplidar_ros',
-        executable='rplidar_composition',
+        executable='rplidar_node',
         name='rplidar_node',
         output='screen',
         parameters=[{
             'serial_port': '/dev/ttyUSB0',
-            'serial_baudrate': 115200,  # A1 / A2
-            'frame_id': 'laser',        # Matches your TF child frame
+            'serial_baudrate': 115200,      # Integer, not string
+            'frame_id': 'laser',
             'inverted': False,
             'angle_compensate': True,
+            'scan_mode': 'Sensitivity'         
         }]
     )
 
@@ -34,36 +35,44 @@ def generate_launch_description():
     # ========================================================================
     # Adjust args: x y z yaw pitch roll parent child
     tf_laser = Node(
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        name='base_to_laser',
-        arguments=['0.2', '0', '0', '0', '0', '0', 'base_link', 'laser']
-    )
+    package='tf2_ros',
+    executable='static_transform_publisher',
+    name='base_to_laser',
+    arguments=[
+        '--x', '0.2',
+        '--y', '0.0',
+        '--z', '0.0',
+        '--roll', '0.0',
+        '--pitch', '0.0',
+        '--yaw', '0.0',
+        '--frame-id', 'base_link',
+        '--child-frame-id', 'laser'
+    ])
 
     # ========================================================================
     # 3. Robot Localization (EKF)
     # ========================================================================
-    ekf_node = Node(
-        package='robot_localization',
-        executable='ekf_node',
-        name='ekf_filter_node',
-        output='screen',
-        parameters=[ekf_config_path]
-    )
+    #ekf_node = Node(
+    #    package='robot_localization',
+    #    executable='ekf_node',
+    #    name='ekf_filter_node',
+    #    output='screen',
+    #    parameters=[ekf_config_path]
+    #)
 
     # ========================================================================
     # 4. SLAM Toolbox (Mapping)
     # ========================================================================
-    slam_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(slam_toolbox_dir, 'launch', 'online_async_launch.py')
-        ),
-        launch_arguments={'use_sim_time': 'false'}.items()
-    )
+    #slam_launch = IncludeLaunchDescription(
+    #    PythonLaunchDescriptionSource(
+    #        os.path.join(slam_toolbox_dir, 'launch', 'online_async_launch.py')
+    #    ),
+    #    launch_arguments={'use_sim_time': 'false'}.items()
+    #)
 
     return LaunchDescription([
         rplidar_node,  # <--- Added here
         tf_laser,
-        ekf_node,
-        slam_launch
+        #ekf_node,
+        #slam_launch
     ])
